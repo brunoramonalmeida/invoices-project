@@ -9,6 +9,9 @@ class Debt extends Model
 {
     use HasFactory;
 
+    public const NOT_PAID = 0;
+    public const PAID = 1;
+
     protected $fillable = [
         'id',
         'name',

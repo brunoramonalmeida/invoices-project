@@ -37,7 +37,7 @@ class InvoiceService implements InvoiceServiceInterface
             $invoice = new Invoice();
             $invoice->amount = $debt->debt_amount;
             $invoice->due_date = $due_date ?? $debt->debt_due_date;
-            $invoice->payment_status = 0; // CRIAR ENUM
+            $invoice->payment_status = Invoice::NOT_PAID;
             $invoice->debt_id = $debt->id;
             $invoice->beneficiary_name = "Invoices SA";
             $invoice->beneficiary_document = "99999999999";
@@ -81,8 +81,8 @@ class InvoiceService implements InvoiceServiceInterface
         $invoiceData->paid_at = $paid_at;
         $invoiceData->paid_amount = $paid_amount;
         $invoiceData->payer_name = $invoiceData->debt->name;
-        $invoiceData->payment_status = 1;
-        $invoiceData->debt->paid = 1;
+        $invoiceData->payment_status = Invoice::PAID;
+        $invoiceData->debt->paid = Debt::PAID;
 
         return $this->invoiceRepository->save($invoiceData);
     }

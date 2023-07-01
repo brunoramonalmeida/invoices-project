@@ -9,6 +9,10 @@ class Invoice extends Model
 {
     use HasFactory;
 
+    public const NOT_PAID = 0;
+    public const PAID = 1;
+    public const EXPIRED = 2;
+
     protected $fillable = [
         'debt_id',
         'amount',
