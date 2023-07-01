@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Interfaces\EmailSenderServiceInterface;
+use App\Interfaces\NotificationServiceInterface;
 use App\Interfaces\InvoiceRepositoryInterface;
 use App\Interfaces\InvoiceServiceInterface;
 use App\Models\Debt;
@@ -18,16 +18,16 @@ class InvoiceController extends Controller
 {
     private $invoiceRepository;
     private $invoiceService;
-    private $emailSenderService;
+    private $notifycationService;
 
     public function __construct(
         InvoiceRepositoryInterface $invoiceRepository,
         InvoiceServiceInterface $invoiceService,
-        EmailSenderServiceInterface $emailSenderService
+        NotificationServiceInterface $notifycationService
     ) {
         $this->invoiceRepository = $invoiceRepository;
         $this->invoiceService = $invoiceService;
-        $this->emailSenderService = $emailSenderService;
+        $this->notifycationService = $notifycationService;
     }
 
     public function generateInvoices(Request $request): Response
@@ -49,7 +49,7 @@ class InvoiceController extends Controller
             if ($debt) {
                 $invoice = $this->invoiceService->generateInvoice($debt, $dueDate);
                 if ($invoice) {
-                    $this->emailSenderService->sendEmail($invoice);
+                    $this->notifycationService->sendNotification($invoice);
                 } else {
                     return Response("Invoice not generated: something went wrong", 400);
                 }

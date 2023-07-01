@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Helper;
 use App\Interfaces\InvoiceRepositoryInterface;
-use App\Interfaces\EmailSenderServiceInterface;
+use App\Interfaces\NotificationServiceInterface;
 use App\Interfaces\InvoiceServiceInterface;
 use App\Repositories\DebtRepository;
 use App\Models\Debt;
@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Log;
 class InvoiceService implements InvoiceServiceInterface
 {
     private $invoiceRepository;
-    private $emailSenderService;
+    private $notificationService;
 
-    public function __construct(InvoiceRepositoryInterface $invoiceRepository, EmailSenderServiceInterface $emailSenderService)
+    public function __construct(InvoiceRepositoryInterface $invoiceRepository, NotificationServiceInterface $notificationService)
     {
         $this->invoiceRepository = $invoiceRepository;
-        $this->emailSenderService = $emailSenderService;
+        $this->notificationService = $notificationService;
     }
 
     public function generateInvoice(Debt $debt, ?string $due_date = null): ?Invoice
@@ -63,7 +63,7 @@ class InvoiceService implements InvoiceServiceInterface
         foreach($debts as $debt) {
             $invoice = $this->generateInvoice($debt);
             if ($invoice) {
-                $this->emailSenderService->sendEmail($invoice);
+                $this->notificationService->sendNotification($invoice);
             } else {
                 Log::error("Invoice not generated: ".$debt->id);
             }
