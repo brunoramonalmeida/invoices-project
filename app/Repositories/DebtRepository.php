@@ -19,6 +19,8 @@ class DebtRepository implements DebtRepositoryInterface
             Log::error('Failed to save debt: ' . $e->getMessage());
             return false;
         }
+
+        return true;
     }
 
     public function saveAll(array $debts): bool
@@ -47,5 +49,7 @@ class DebtRepository implements DebtRepositoryInterface
             Log::error('Failed to save debts: ' . $e->getMessage());
             return false;
         }
+
+        return true;
     }
 }

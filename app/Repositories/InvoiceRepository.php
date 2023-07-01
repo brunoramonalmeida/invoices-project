@@ -14,7 +14,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
     {
         try {
             if (!empty($invoice)) {
-                $invoice->debt->save();
+                optional($invoice->debt)->save();
                 return $invoice->save();
             }
         } catch (\Exception $e) {

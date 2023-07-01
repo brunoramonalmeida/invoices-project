@@ -3,13 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helper;
+use App\Interfaces\DebtServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
-use App\Interfaces\DebtServiceInterface;
-use App\Interfaces\EmailSenderServiceInterface;
-
-use App\Models\Debt;
 use Illuminate\Support\Facades\Log;
 
 class DebtController extends Controller
