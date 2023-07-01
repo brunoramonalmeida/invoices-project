@@ -3,57 +3,98 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
+use Faker\Factory as FakerFactory;
 
-use App\Interfaces\DebtRepositoryInterface;
-use App\Interfaces\InvoiceServiceInterface;
+use App\Interfaces\DebtServiceInterface;
 use App\Interfaces\EmailSenderServiceInterface;
 
 use App\Models\Debt;
 
-
 class DebtController extends Controller
 {
-    private $debtRepository;
-    private $invoiceGeneratorService;
+    private $debtService;
     private $emailSenderService;
 
     public function __construct(
-        DebtRepositoryInterface $debtRepository,
-        InvoiceServiceInterface $invoiceGeneratorService,
+        DebtServiceInterface $debtService,
         EmailSenderServiceInterface $emailSenderService
     ) {
-        $this->debtRepository = $debtRepository;
-        $this->invoiceGeneratorService = $invoiceGeneratorService;
+        $this->debtService = $debtService;
         $this->emailSenderService = $emailSenderService;
     }
 
     public function processDebts(Request $request): Response
     {
-        $csvData = $request->getContent();
-        $debts = $this->parseCsvData($csvData);
+        if ($request->hasFile('input')) {
+            $csvData = $request->file('input');
+            if ($csvData->isValid()) {
 
-        foreach ($debts as $debtData) {
-            $debt = new Debt(
-                $debtData['name'],
-                $debtData['governmentId'],
-                $debtData['email'],
-                $debtData['debtAmount'],
-                $debtData['debtDueDate'],
-                $debtData['debtId']
-            );
+                $csvData = file_get_contents($csvData->path());
 
-            $this->invoiceGeneratorService->generateInvoice($debt);
+                $debts = $this->parseCsvData($csvData);
 
-            $this->emailSenderService->sendEmail($debt);
+                $this->debtService->generateDebts($debts);
+
+                return new Response('Debts processed successfully');
+            }
+        } else {
+            return response()->json(['error' => 'Invalid CSV file'], 400);
         }
-
-        return new Response('Debts processed successfully');
     }
 
-    private function parseCsvData(string $csvData): array
+    private function parseCsvData($csvData): array
     {
-        // Lógica para analisar os dados do CSV e retornar um array de dívidas
-        return [];
+        $lines = explode("\n", $csvData);
+        $debts = [];
+
+        $lines = array_slice($lines, 1);
+
+        foreach ($lines as $line) {
+            $data = str_getcsv($line);
+
+            if (count($data) >= 6) {
+                $name = $data[0];
+                $governmentId = $data[1];
+                $email = $data[2];
+                $debtAmount = floatval($data[3]);
+                $debtDueDate = $data[4];
+                $debtId = intval($data[5]);
+
+                $debt = new Debt();
+                $debt->id = $debtId;
+                $debt->name = $name;
+                $debt->governmentId = $governmentId;
+                $debt->email = $email;
+                $debt->debtAmount = $debtAmount;
+                $debt->debtDueDate = $debtDueDate;
+                $debts[] = $debt;
+            }
+        }
+
+        return $debts;
+    }
+
+    public function generateFakeDebts()
+    {
+        $faker = FakerFactory::create();
+        $csvData = "name,governmentId,email,debtAmount,debtDueDate,debtId\n";
+
+        for ($i = 0; $i < 10; $i++) {
+            $name = $faker->name;
+            $governmentId = $faker->numerify('###########');
+            $email = $faker->email;
+            $debtAmount = $faker->randomFloat(2, 100, 1000);
+            $debtDueDate = $faker->dateTimeBetween('now', '+1 year')->format('Y-m-d');
+            $debtId = $faker->randomNumber(4);
+
+            $csvData .= "$name,$governmentId,$email,$debtAmount,$debtDueDate,$debtId\n";
+        }
+
+        $filename = 'fake_debts.csv';
+        Storage::disk('local')->put($filename, $csvData);
+
+        return response()->download(storage_path("app/$filename"), $filename);
     }
 }

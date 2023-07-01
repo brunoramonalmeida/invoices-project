@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\DebtController;
+use App\Http\Controllers\InvoiceController;
+use App\Models\Invoice;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +21,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('invoice/generate', [InvoiceController::class, 'generateInvoice']);
+
+Route::post('/process-debts', [DebtController::class, 'processDebts']);
+
+Route::post('/hooks/payment', [InvoiceController::class, 'receivePayment']);

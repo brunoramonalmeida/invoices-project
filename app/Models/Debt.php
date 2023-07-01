@@ -9,8 +9,16 @@ class Debt extends Model
 {
     use HasFactory;
 
-    /**
-     * @var array
-     */
-    protected $fillable = ['name', 'governmentId', 'email', 'debtAmount', 'debtDueDate', 'debtId'];
+    protected $fillable = [
+        'name',
+        'government_id',
+        'email',
+        'debt_amount',
+        'debt_due_date',
+    ];
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

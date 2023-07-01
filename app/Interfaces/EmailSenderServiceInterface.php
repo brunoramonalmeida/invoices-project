@@ -2,9 +2,7 @@
 
 namespace App\Interfaces;
 
-use App\Models\Debt;
-
 interface EmailSenderServiceInterface
 {
-    public function sendEmail(Debt $debt): void;
+    public function sendEmail($debt): void;
 }

@@ -4,23 +4,35 @@ namespace App\Repositories;
 
 use App\Interfaces\DebtRepositoryInterface;
 use App\Models\Debt;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DebtRepository implements DebtRepositoryInterface
 {
-    private $debts;
-
-    public function __construct()
-    {
-        $this->debts = [];
-    }
-
     public function save(Debt $debt): void
     {
-        $this->debts[] = $debt;
+        $debt->save();
     }
 
-    public function getAll(): array
+    public function saveAll(array $debts): void
     {
-        return $this->debts;
+        $debtData = [];
+
+        foreach ($debts as $debt) {
+            $debtData[] = [
+                'id' => $debt->id,
+                'name' => $debt->name,
+                'government_id' => $debt->governmentId,
+                'email' => $debt->email,
+                'debt_amount' => $debt->debtAmount,
+                'debt_due_date' => $debt->debtDueDate,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        if (!empty($debtData)) {
+            DB::table('debts')->insert($debtData);
+        }
     }
 }

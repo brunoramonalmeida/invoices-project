@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDeptsTable extends Migration
+class CreateDebtsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateDeptsTable extends Migration
      */
     public function up()
     {
-        Schema::create('depts', function (Blueprint $table) {
+        Schema::create('debts', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('governmentId');
+            $table->string('government_id');
             $table->string('email');
-            $table->double('debtAmount');
-            $table->date('debtDueDate');
-            $table->integer('debtId');
+            $table->double('debt_amount');
+            $table->date('debt_due_date');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ class CreateDeptsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('depts');
+        Schema::dropIfExists('debts');
     }
 }
