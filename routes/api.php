@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('invoice/generate', [InvoiceController::class, 'generateInvoice']);
 
+Route::post('invoice/generate-all', [InvoiceController::class, 'generateInvoices']);
+
 Route::post('/process-debts', [DebtController::class, 'processDebts']);
 
 Route::post('/hooks/payment', [InvoiceController::class, 'receivePayment']);

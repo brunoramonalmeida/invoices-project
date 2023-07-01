@@ -7,9 +7,12 @@ use App\Interfaces\InvoiceRepositoryInterface;
 use App\Interfaces\InvoiceServiceInterface;
 use App\Models\Debt;
 use App\Models\Invoice;
-use Exception;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+
+use Exception;
 
 class InvoiceController extends Controller
 {
@@ -25,6 +28,15 @@ class InvoiceController extends Controller
         $this->invoiceRepository = $invoiceRepository;
         $this->invoiceService = $invoiceService;
         $this->emailSenderService = $emailSenderService;
+    }
+
+    public function generateInvoices(Request $request): Response
+    {
+        if ($this->invoiceService->generateInvoices()) {
+            return Response("Invoices generated successfully");
+        } else {
+            return Response("Error on trying generating invoices");
+        }
     }
 
     public function generateInvoice(Request $request): Response
@@ -54,25 +66,36 @@ class InvoiceController extends Controller
 
     public function receivePayment(Request $request): Response
     {
-        $params = $request->all();
+        $validator = Validator::make($request->all(), [
+            'debtId' => 'required|integer',
+            'paidAt' => 'required|date',
+        ]);
 
-        $debtId = intval($request->debtId);
-        $paidAt = $request->paidAt;
-        $paidAmount = $request->paidAmount;
-        $paidBy = $request->paidBy;
-
-        // Validar infos
-
-        $debt = Invoice::where("debt_id",$debtId)->first();
-
-        if ($debt) {
-            $this->invoiceService->identifyPayment($debt, $paidAt, $paidAmount);
-            return new Response('Payment processed successfully');
-        } else {
-            return new Response('Débito não encontrado', 400);
+        if ($validator->fails()) {
+            return new Response($validator->errors()->first(), 400);
         }
 
+        try {
+            $debtId = intval($request->debtId);
+            $paidAt = $request->paidAt;
+            $paidAmount = $request->paidAmount;
+            $paidBy = $request->paidBy;
 
+            $debt = Invoice::where("debt_id",$debtId)->first();
+
+            if ($debt) {
+                if ($this->invoiceService->identifyPayment($debt, $paidAt, $paidAmount)) {
+                    return new Response('Payment processed successfully');
+                } else {
+                    return new Response('Payment not processed', 400);
+                }
+
+            } else {
+                return new Response('Debt not found', 400);
+            }
+        } catch(Exception $e) {
+            return Response("Error: ".$e->getMessage(), 400);
+        }
     }
 
 }

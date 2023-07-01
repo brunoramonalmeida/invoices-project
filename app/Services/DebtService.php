@@ -6,6 +6,7 @@ use App\Interfaces\DebtRepositoryInterface;
 use App\Interfaces\DebtServiceInterface;
 use App\Interfaces\InvoiceServiceInterface;
 use App\Models\Debt;
+use Illuminate\Support\Facades\DB;
 
 class DebtService implements DebtServiceInterface
 {
@@ -25,7 +26,11 @@ class DebtService implements DebtServiceInterface
 
     public function generateDebts(array $debts): bool
     {
-        return $this->debtRepository->saveAll($debts);
+        return DB::transaction(function () use ($debts) {
+            $this->debtRepository->saveAll($debts);
+            $this->invoiceService->generateInvoices($debts);
+            return true;
+        });
     }
 
     public function parseCsvData($csvData): array
@@ -39,20 +44,17 @@ class DebtService implements DebtServiceInterface
             $data = str_getcsv($line);
 
             if (count($data) >= 6) {
-                $name = $data[0];
-                $governmentId = $data[1];
-                $email = $data[2];
-                $debtAmount = floatval($data[3]);
-                $debtDueDate = $data[4];
-                $debtId = intval($data[5]);
+                $attributes = [
+                    'id' => intval($data[5]),
+                    'name' => $data[0],
+                    'government_id' => $data[1],
+                    'email' => $data[2],
+                    'debt_amount' => floatval($data[3]),
+                    'debt_due_date' => $data[4],
+                ];
 
                 $debt = new Debt();
-                $debt->id = $debtId;
-                $debt->name = $name;
-                $debt->governmentId = $governmentId;
-                $debt->email = $email;
-                $debt->debtAmount = $debtAmount;
-                $debt->debtDueDate = $debtDueDate;
+                $debt->fill($attributes);
                 $debts[] = $debt;
             }
         }

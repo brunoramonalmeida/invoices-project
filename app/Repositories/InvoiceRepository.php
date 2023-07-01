@@ -13,13 +13,14 @@ class InvoiceRepository implements InvoiceRepositoryInterface
     public function save(Invoice $invoice): bool
     {
         try {
-            if (!empty($invoiceData)) {
+            if (!empty($invoice)) {
+                $invoice->debt->save();
                 return $invoice->save();
             }
         } catch (\Exception $e) {
             Log::error('Failed to save invoice: ' . $e->getMessage());
-            return false;
         }
+        return false;
     }
 
 }

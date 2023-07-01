@@ -20,6 +20,7 @@ class CreateDebtsTable extends Migration
             $table->string('email');
             $table->double('debt_amount');
             $table->date('debt_due_date');
+            $table->boolean('paid')->default(0);
             $table->timestamps();
         });
     }

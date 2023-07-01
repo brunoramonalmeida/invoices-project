@@ -29,10 +29,10 @@ class DebtRepository implements DebtRepositoryInterface
             $debtData[] = [
                 'id' => $debt->id,
                 'name' => $debt->name,
-                'government_id' => $debt->governmentId,
+                'government_id' => $debt->government_id,
                 'email' => $debt->email,
-                'debt_amount' => $debt->debtAmount,
-                'debt_due_date' => $debt->debtDueDate,
+                'debt_amount' => $debt->debt_amount,
+                'debt_due_date' => $debt->debt_due_date,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
