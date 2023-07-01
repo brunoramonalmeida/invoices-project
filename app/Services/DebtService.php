@@ -18,21 +18,45 @@ class DebtService implements DebtServiceInterface
         $this->invoiceService = $invoiceService;
     }
 
-    public function generateDebt(Debt $debt): void
+    public function generateDebt(Debt $debt): bool
     {
-        $this->debtRepository->save($debt);
+        return $this->debtRepository->save($debt);
     }
 
-    public function generateDebts(array $debts): void
+    public function generateDebts(array $debts): bool
     {
-        $this->debtRepository->saveAll($debts);
+        return $this->debtRepository->saveAll($debts);
     }
 
-    // public function settleDebt(Debt $debt): void
-    // {
-    //     $invoices = $debt->invoices()->get();
-    //     foreach ($invoices as $invoice) {
-    //         $this->invoiceService->identifyPayment($invoice);
-    //     }
-    // }
+    public function parseCsvData($csvData): array
+    {
+        $lines = explode("\n", $csvData);
+        $debts = [];
+
+        $lines = array_slice($lines, 1);
+
+        foreach ($lines as $line) {
+            $data = str_getcsv($line);
+
+            if (count($data) >= 6) {
+                $name = $data[0];
+                $governmentId = $data[1];
+                $email = $data[2];
+                $debtAmount = floatval($data[3]);
+                $debtDueDate = $data[4];
+                $debtId = intval($data[5]);
+
+                $debt = new Debt();
+                $debt->id = $debtId;
+                $debt->name = $name;
+                $debt->governmentId = $governmentId;
+                $debt->email = $email;
+                $debt->debtAmount = $debtAmount;
+                $debt->debtDueDate = $debtDueDate;
+                $debts[] = $debt;
+            }
+        }
+
+        return $debts;
+    }
 }

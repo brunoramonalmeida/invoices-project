@@ -34,8 +34,18 @@ class InvoiceController extends Controller
 
         try {
             $debt = Debt::find($debtId);
-            $invoice = $this->invoiceService->generateInvoice($debt, $dueDate);
-            $this->emailSenderService->sendEmail($invoice);
+            if ($debt) {
+                $invoice = $this->invoiceService->generateInvoice($debt, $dueDate);
+                if ($invoice) {
+                    $this->emailSenderService->sendEmail($invoice);
+                } else {
+                    return Response("Invoice not generated: something went wrong", 400);
+                }
+
+            } else {
+                return Response("Invoice not generated: Debt not found.", 400);
+            }
+
             return Response("Invoice generated successfully");
         } catch(Exception $e) {
             return Response("Erro: ".$e->getMessage(), 400);

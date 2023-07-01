@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\DebtController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,9 +16,3 @@ use App\Http\Controllers\DebtController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/generate-debts', [DebtController::class, 'generateFakeDebts']);
-
-// Route::controller(DebtController::class)->group(function () {
-//     Route::get('/generate-debts', 'generateFakeDebts');
-// });

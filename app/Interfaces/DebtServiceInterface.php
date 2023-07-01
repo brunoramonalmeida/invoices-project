@@ -6,6 +6,7 @@ use App\Models\Debt;
 
 interface DebtServiceInterface
 {
-    public function generateDebt(Debt $debt): void;
-    public function generateDebts(array $debt): void;
+    public function generateDebt(Debt $debt): bool;
+    public function generateDebts(array $debt): bool;
+    public function parseCsvData($csvData): array;
 }

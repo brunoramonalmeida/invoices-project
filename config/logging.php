@@ -48,6 +48,12 @@ return [
     */
 
     'channels' => [
+        'outputstream' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/outputstream.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

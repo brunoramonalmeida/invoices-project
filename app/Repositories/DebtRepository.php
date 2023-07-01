@@ -4,17 +4,24 @@ namespace App\Repositories;
 
 use App\Interfaces\DebtRepositoryInterface;
 use App\Models\Debt;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DebtRepository implements DebtRepositoryInterface
 {
-    public function save(Debt $debt): void
+    public function save(Debt $debt): bool
     {
-        $debt->save();
+        try {
+            if (!empty($debtData)) {
+                return $debt->save();
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to save debt: ' . $e->getMessage());
+            return false;
+        }
     }
 
-    public function saveAll(array $debts): void
+    public function saveAll(array $debts): bool
     {
         $debtData = [];
 
@@ -31,8 +38,14 @@ class DebtRepository implements DebtRepositoryInterface
             ];
         }
 
-        if (!empty($debtData)) {
-            DB::table('debts')->insert($debtData);
+        try {
+            if (!empty($debtData)) {
+                DB::table('debts')->insert($debtData);
+            }
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Failed to save debts: ' . $e->getMessage());
+            return false;
         }
     }
 }

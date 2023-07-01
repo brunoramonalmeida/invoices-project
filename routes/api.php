@@ -27,3 +27,5 @@ Route::post('invoice/generate', [InvoiceController::class, 'generateInvoice']);
 Route::post('/process-debts', [DebtController::class, 'processDebts']);
 
 Route::post('/hooks/payment', [InvoiceController::class, 'receivePayment']);
+
+Route::get('/generate-debts', [DebtController::class, 'generateFakeDebts']);

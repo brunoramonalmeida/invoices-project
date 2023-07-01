@@ -6,6 +6,5 @@ use App\Models\Invoice;
 
 interface InvoiceRepositoryInterface
 {
-    public function save(Invoice $invoices): void;
-    public function saveAll(array $invoices): void;
+    public function save(Invoice $invoices): bool;
 }

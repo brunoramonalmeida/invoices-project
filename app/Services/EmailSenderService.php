@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Interfaces\InvoiceRepositoryInterface;
 use App\Interfaces\EmailSenderServiceInterface;
 use App\Models\Invoice;
+use Illuminate\Support\Facades\Log;
 
 class EmailSenderService implements EmailSenderServiceInterface
 {
@@ -17,6 +18,7 @@ class EmailSenderService implements EmailSenderServiceInterface
 
     public function sendEmail($invoice): void
     {
-        var_dump("Cobrança enviada para: ".$invoice);
+        $message = sprintf("Cobrança enviada para: %s. Dados para pagamento: %s", $invoice->debt->email, $invoice);
+        Log::channel('outputstream')->info($message);
     }
 }

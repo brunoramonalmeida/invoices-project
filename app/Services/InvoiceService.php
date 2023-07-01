@@ -21,7 +21,10 @@ class InvoiceService implements InvoiceServiceInterface
 
     public function generateInvoice(Debt $debt, string $due_date): Invoice
     {
-        // Verifica se data é válida
+        if (!strtotime($due_date)) {
+            throw new \InvalidArgumentException('Invalid date format (correct: Y-m-d)');
+        }
+
         $invoice = new Invoice();
         $invoice->amount = $debt->debt_amount;
         $invoice->due_date = $debt->debt_due_date;
@@ -35,14 +38,11 @@ class InvoiceService implements InvoiceServiceInterface
         $invoice->payer_address = "Random Address";
         $invoice->document_number = Helper::gerarCodigoBarras();
 
-        $this->invoiceRepository->save($invoice);
-
-        return $invoice;
-    }
-
-    public function generateInvoices(array $debts, string $due_date): void
-    {
-        $this->invoiceRepository->saveAll($debts);
+        if ($this->invoiceRepository->save($invoice)) {
+            return $invoice;
+        } else {
+            return null;
+        }
     }
 
     public function identifyPayment(Invoice $invoice, string $paid_at, float $paid_amount): void

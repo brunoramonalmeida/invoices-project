@@ -6,6 +6,6 @@ use App\Models\Debt;
 
 interface DebtRepositoryInterface
 {
-    public function save(Debt $debt): void;
-    public function saveAll(array $debts): void;
+    public function save(Debt $debt): bool;
+    public function saveAll(array $debts): bool;
 }
