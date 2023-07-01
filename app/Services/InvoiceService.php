@@ -45,7 +45,7 @@ class InvoiceService implements InvoiceServiceInterface
             $invoice->payer_name = $debt->name;
             $invoice->payer_document = $debt->government_id;
             $invoice->payer_address = "Random Address";
-            $invoice->document_number = Helper::gerarCodigoBarras();
+            $invoice->document_number = Helper::generateBarCode();
 
             if ($this->invoiceRepository->save($invoice)) {
                 return $invoice;

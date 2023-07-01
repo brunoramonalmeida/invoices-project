@@ -1,64 +1,55 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Invoices Project
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este projeto, chamado **Invoices Project**, foi criado por Bruno Ramon Almeida.
 
-## About Laravel
+## Descrição
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+O Invoices Project é um sistema de gerenciamento de cobranças que permite a geração de boletos e envio de e-mails para cobrança de débitos. Ele foi desenvolvido usando o framework Laravel com PHP e segue os princípios do SOLID para garantir uma arquitetura limpa e modular.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+O sistema recebe uma lista de débitos por meio de uma API, na forma de um arquivo CSV contendo informações como nome, CPF, e-mail, valor da dívida, vencimento da dívida e código da dívida. Com base nessas informações, o sistema gera boletos periodicamente e envia e-mails para cobrança.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Além disso, o sistema foi projetado de forma modular, utilizando o conceito de repositories e services, permitindo uma maior flexibilidade e facilidade de manutenção.
 
-## Learning Laravel
+## Funcionalidades
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Receber lista de débitos via API no formato CSV.
+- Gerar boletos para cobrança dos débitos.
+- Enviar e-mails de cobrança para os devedores.
+- Arquitetura baseada em repositories e services, seguindo os princípios do SOLID.
+- Testes unitários e de integração para garantir a qualidade do código.
+- Executar o comando `php artisan schedule:work` para rodar a job que envia os boletos rotineiramente.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Requisitos de Instalação
 
-## Laravel Sponsors
+- PHP 7.4 ou superior
+- Composer
+- Banco de dados (MySQL, PostgreSQL, SQLite, etc.)
+- Extensões PHP necessárias (consulte o arquivo `composer.json` para obter a lista completa)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Instalação
 
-### Premium Partners
+1. Faça o clone deste repositório para o diretório desejado.
+2. Acesse o diretório do projeto: `cd invoices-project`.
+3. Execute o comando `composer install` para instalar as dependências do projeto.
+4. Renomeie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente, como conexão com o banco de dados.
+5. Execute o comando `php artisan key:generate` para gerar a chave do aplicativo.
+6. Execute o comando `php artisan migrate` para executar as migrações do banco de dados.
+7. O sistema está pronto para uso!
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Uso
 
-## Contributing
+Para iniciar o servidor local do Laravel, execute o comando `php artisan serve`. O sistema estará acessível em `http://localhost:8000`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Você pode configurar as rotas e controladores em `routes/web.php` e `app/Http/Controllers` para definir as funcionalidades do sistema de acordo com suas necessidades.
 
-## Code of Conduct
+Além disso, você pode executar os testes unitários e de integração com o comando `php artisan test` para garantir a qualidade do código.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Para que a job responsável por enviar os boletos seja executada periodicamente, é necessário rodar o comando `php artisan schedule:work`. Isso garante que as cobranças sejam enviadas regularmente de acordo com a configuração de agendamento definida no arquivo `app/Console/Kernel.php`.
 
-## Security Vulnerabilities
+## Autor
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Bruno Ramon de Almeida e Silva
 
-## License
+## Licença
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Este projeto está licenciado sob a [MIT License](LICENSE).

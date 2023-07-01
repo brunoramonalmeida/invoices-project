@@ -7,7 +7,7 @@ use Faker\Factory as FakerFactory;
 
 class Helper
 {
-    public static function gerarCodigoBarras(): string
+    public static function generateBarCode(): string
     {
         $codigoBarras = '';
 
